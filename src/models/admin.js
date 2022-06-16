@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 
 const Admin = (sequelize) => {
   return sequelize.define("Admin", {

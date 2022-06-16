@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const fs = require("fs");
-const { dirname } = require("path");
 const moment = require("moment");
 const app = express();
 

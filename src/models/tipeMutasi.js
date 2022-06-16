@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 
 const TipeMutasi = (sequelize) => {
   return sequelize.define("Tipe_mutasi", {

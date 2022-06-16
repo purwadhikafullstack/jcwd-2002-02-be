@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 
 const UserLoginSession = (sequelize) => {
   return sequelize.define("User_login_session", {

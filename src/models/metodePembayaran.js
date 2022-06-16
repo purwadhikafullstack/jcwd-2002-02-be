@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 
 const MetodePembayaran = (sequelize) => {
   return sequelize.define("Metode_pembayaran", {

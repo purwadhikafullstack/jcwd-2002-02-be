@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 
 const StokStatus = (sequelize) => {
   return sequelize.define("Stok_status", {

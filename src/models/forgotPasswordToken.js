@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 
 const ForgotPasswordToken = (sequelize) => {
   return sequelize.define("Forgot_password_token", {

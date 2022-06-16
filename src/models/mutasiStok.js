@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 
 const MutasiStok = (sequelize) => {
   return sequelize.define("Mutasi_stok", {
@@ -7,7 +7,7 @@ const MutasiStok = (sequelize) => {
       allowNull: false,
     },
     jumlah: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   });

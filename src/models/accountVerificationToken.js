@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+const { DataTypes } = require("sequelize");
 
 const UserAccVerification = (sequelize) => {
   return sequelize.define("User_account_verification", {
