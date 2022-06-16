@@ -12,10 +12,6 @@ const BuktiPembayaran = (sequelize) => {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
-    method: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     is_approved: {
       type: DataTypes.BOOLEAN,
     },

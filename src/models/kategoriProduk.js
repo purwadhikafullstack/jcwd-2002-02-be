@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize/types");
 
-const Kategori = (sequelize) => {
+const KategoriProduk = (sequelize) => {
   return sequelize.define("Kategori_produk", {
     kategori: {
       type: DataTypes.STRING,
@@ -9,4 +9,4 @@ const Kategori = (sequelize) => {
   });
 };
 
-module.exports = Kategori;
+module.exports = KategoriProduk;

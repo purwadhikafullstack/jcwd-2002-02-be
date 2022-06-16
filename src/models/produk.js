@@ -18,6 +18,9 @@ const Produk = (sequelize) => {
       type: DataTypes.NUMBER,
       allowNull: false,
     },
+    produk_image_url: {
+      type: DataTypes.JSON,
+    },
   });
 };
 

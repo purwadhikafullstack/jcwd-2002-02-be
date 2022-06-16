@@ -8,6 +8,9 @@ const app = express();
 
 dotenv.config();
 
+const { sequelize } = require("./lib/sequelize");
+sequelize.sync({ alter: true });
+
 const PORT = 2000;
 
 app.use(cors());
@@ -18,7 +21,6 @@ app.use((req, res, next) => {
 
   fs.appendFileSync(`${__dirname}/../.log`, loggingFormat + "\n");
 
-  // res.send("<h1>Welcome to my Express API</h1>");
   next();
 });
 

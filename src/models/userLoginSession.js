@@ -6,6 +6,13 @@ const UserLoginSession = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    is_valid: {
+      type: DataTypes.BOOLEAN,
+    },
+    valid_until: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   });
 };
 

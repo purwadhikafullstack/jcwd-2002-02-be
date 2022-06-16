@@ -6,6 +6,10 @@ const User = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -13,6 +17,12 @@ const User = (sequelize) => {
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    photo_profile: {
+      type: DataTypes.STRING,
+    },
+    is_verified: {
+      type: DataTypes.BOOLEAN,
     },
   });
 };
