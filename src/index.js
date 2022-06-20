@@ -23,6 +23,10 @@ app.use((req, res, next) => {
   next();
 });
 
+const TestRouter = require("./router/test");
+
+app.use("/test", TestRouter);
+
 app.listen(PORT, () => {
   console.log("Listening in Port: ", PORT);
 });
