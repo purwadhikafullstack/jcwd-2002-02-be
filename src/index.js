@@ -23,9 +23,9 @@ app.use((req, res, next) => {
   next();
 });
 
-const TestRouter = require("./router/test");
+const { authRouter } = require("./router");
 
-app.use("/test", TestRouter);
+app.use("/auth", authRouter);
 
 app.listen(PORT, () => {
   console.log("Listening in Port: ", PORT);
