@@ -28,6 +28,7 @@ const authController = {
       });
     }
   },
+
   loginAdmin: async (req, res) => {
     try {
       const { username, password } = req.body;
@@ -35,6 +36,51 @@ const authController = {
 
       if (!serviceResult.success) throw serviceResult;
 
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+        result: serviceResult.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
+
+  keepLoginAdmin: async (req, res) => {
+    try {
+      const { token } = req;
+      const serviceResult = await AuthService.keepLoginAdmin(token);
+
+      if (!serviceResult.success) throw serviceResult;
+
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+        result: serviceResult.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
+
+  registerAdmin: async (req, res) => {
+    try {
+      const { name, username, email, password } = req.body;
+
+      const hashedPassword = bcrypt.hashSync(password, 5);
+
+      const serviceResult = await AuthService.registerAdmin(
+        username,
+        email,
+        name,
+        hashedPassword
+      );
+
+      if (!serviceResult.success) throw serviceResult;
       return res.status(serviceResult.statusCode || 200).json({
         message: serviceResult.message,
         result: serviceResult.data,
