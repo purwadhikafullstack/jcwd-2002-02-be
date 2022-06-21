@@ -145,7 +145,7 @@ const authController = {
         username,
         email,
         name,
-        hashedPassword
+        password
       );
 
       if (!serviceResult.success) throw serviceResult;
@@ -189,6 +189,23 @@ const authController = {
         message: serviceResult.message,
         result: serviceResult.data,
       });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
+
+  verifyUser: async (req, res) => {
+    try {
+      const { token } = req.params;
+
+      const serviceResult = await AuthService.verifyUser(token);
+
+      if (!serviceResult.success) throw serviceResult;
+
+      return res.redirect(serviceResult.url);
     } catch (err) {
       console.log(err);
       return res.status(err.statusCode || 500).json({

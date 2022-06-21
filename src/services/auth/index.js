@@ -18,7 +18,6 @@ const bcrypt = require("bcrypt");
 class AuthService extends Service {
   static registerUser = async (username, email, name, password) => {
     try {
-      const hashedPassword = bcrypt.hashSync(password, 5);
       const isUsernameOrEmailTaken = await User.findOne({
         where: {
           [Op.or]: [{ username }, { email }],
@@ -31,6 +30,8 @@ class AuthService extends Service {
           message: "Username or email has been taken!",
         });
       }
+
+      const hashedPassword = bcrypt.hashSync(password, 5);
 
       const registerUser = await User.create({
         username,
@@ -68,7 +69,7 @@ class AuthService extends Service {
       return this.handleSuccess({
         statusCode: 201,
         message:
-          "User Registered, please check your email to verify your account!",
+          "Account Registered, please check your email to verify your account!",
         data: registerUser,
       });
     } catch (err) {
