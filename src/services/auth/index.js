@@ -6,9 +6,10 @@ const { nanoid } = require("nanoid");
 const moment = require("moment");
 const fs = require("fs");
 const mustache = require("mustache");
+const bcrypt = require("bcrypt");
 
 class AuthService extends Service {
-  static registerUser = async (username, email, name, hashedPassword) => {
+  static registerUser = async (username, email, name, password) => {
     try {
       const isUsernameOrEmailTaken = await User.findOne({
         where: {
@@ -22,6 +23,8 @@ class AuthService extends Service {
           message: "Username or email has been taken!",
         });
       }
+
+      const hashedPassword = bcrypt.hashSync(password, 5);
 
       const registerUser = await User.create({
         username,
@@ -59,7 +62,7 @@ class AuthService extends Service {
       return this.handleSuccess({
         statusCode: 201,
         message:
-          "User Registered, please check your email to verify your account!",
+          "Account Registered, please check your email to verify your account!",
         data: registerUser,
       });
     } catch (err) {
@@ -67,6 +70,54 @@ class AuthService extends Service {
       return this.handleError({
         statusCode: 500,
         message: "Server error!",
+      });
+    }
+  };
+
+  static verifyUser = async (token) => {
+    try {
+      const verifyToken = await AccountVerificationToken.findOne({
+        where: {
+          token,
+          is_valid: true,
+          valid_until: {
+            [Op.gt]: moment().utc(),
+          },
+        },
+      });
+
+      if (!verifyToken) {
+        return this.handleError({
+          message: "Token is not valid!",
+          statusCode: 401,
+        });
+      }
+
+      await User.update(
+        { is_verified: true },
+        {
+          where: {
+            id: verifyToken.userId,
+          },
+        }
+      );
+
+      await AccountVerificationToken.update(
+        { is_valid: false },
+        {
+          where: {
+            userId: verifyToken.userId,
+          },
+        }
+      );
+
+      return this.handleRedirect({
+        url: `http://localhost:3000/verification-success?referral=${token}`,
+      });
+    } catch (err) {
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
       });
     }
   };

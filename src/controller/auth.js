@@ -1,18 +1,15 @@
 const AuthService = require("../services/auth");
-const bcrypt = require("bcrypt");
 
 const authController = {
   registerUser: async (req, res) => {
     try {
       const { name, username, email, password } = req.body;
 
-      const hashedPassword = bcrypt.hashSync(password, 5);
-
       const serviceResult = await AuthService.registerUser(
         username,
         email,
         name,
-        hashedPassword
+        password
       );
 
       if (!serviceResult.success) throw serviceResult;
@@ -21,6 +18,23 @@ const authController = {
         message: serviceResult.message,
         result: serviceResult.data,
       });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
+
+  verifyUser: async (req, res) => {
+    try {
+      const { token } = req.params;
+
+      const serviceResult = await AuthService.verifyUser(token);
+
+      if (!serviceResult.success) throw serviceResult;
+
+      return res.redirect(serviceResult.url);
     } catch (err) {
       console.log(err);
       return res.status(err.statusCode || 500).json({
