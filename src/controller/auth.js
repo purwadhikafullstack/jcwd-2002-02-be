@@ -126,41 +126,60 @@ const authController = {
   },
   loginUser: async (req, res) => {
     try {
-      const {credential, password} = req.body
-      const serviceResult = await AuthService.loginUser(credential, password)
+      const { credential, password } = req.body;
+      const serviceResult = await AuthService.loginUser(credential, password);
 
-      if(!serviceResult.success) throw serviceResult
+      if (!serviceResult.success) throw serviceResult;
 
       return res.status(serviceResult.statusCode || 200).json({
         message: serviceResult.message,
-        result: serviceResult.data
-      })
+        result: serviceResult.data,
+      });
     } catch (err) {
       console.log(err);
       return res.status(err.statusCode || 500).json({
-        message: err.message
-      })
+        message: err.message,
+      });
     }
   },
 
   keepLoginUser: async (req, res) => {
     try {
-      const {token, user} = req
-      const serviceResult = await AuthService.keepLoginUser(token, user)
+      const { token, user } = req;
+      const serviceResult = await AuthService.keepLoginUser(token, user);
 
-      if(!serviceResult.success) throw serviceResult
+      if (!serviceResult.success) throw serviceResult;
 
       return res.status(serviceResult.statusCode || 200).json({
         message: serviceResult.message,
-        result: serviceResult.data
-      })
+        result: serviceResult.data,
+      });
     } catch (err) {
       console.log(err);
       return res.status(err.statusCode || 500).json({
-        message: err.message
-      })
+        message: err.message,
+      });
     }
-  }
+  },
+
+  loginAdmin: async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const serviceResult = await AuthService.loginAdmin(username, password);
+
+      if (!serviceResult.success) throw serviceResult;
+
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+        result: serviceResult.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
 };
 
 module.exports = authController;
