@@ -20,4 +20,6 @@ router.post(
   authController.resendVerificationEmail
 );
 
+router.post("/login", authController.loginUser)
+
 module.exports = router;
