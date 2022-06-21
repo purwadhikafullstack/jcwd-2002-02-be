@@ -12,6 +12,13 @@ class ProductService extends Service {
                 }
             })
 
+            if(!getProductData) {
+                return this.handleError({
+                    message: `Can't Find Product with ID: ${productId}`,
+                    statusCode: 404
+                })
+            }
+
             return this.handleSuccess({
                 message: "Product Found",
                 statusCode: 200,
