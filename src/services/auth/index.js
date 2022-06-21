@@ -112,7 +112,7 @@ class AuthService extends Service {
       );
 
       return this.handleRedirect({
-        url: `http://localhost:3000/verification-success?referral=${token}`,
+        url: `http://localhost:3000/verifikasi-berhasil?referral=${token}`,
       });
     } catch (err) {
       return this.handleError({
