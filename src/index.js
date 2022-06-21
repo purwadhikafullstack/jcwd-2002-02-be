@@ -23,7 +23,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const { authRouter } = require("./router");
+const { authRouter } = require("./routes");
 
 app.use("/auth", authRouter);
 
