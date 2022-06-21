@@ -225,6 +225,23 @@ const authController = {
       });
     }
   },
+
+  editAvatarUser: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const serviceResult = await AuthService.editAvatarUser(id);
+      if (!serviceResult.success) throw serviceResult;
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
 };
 
 module.exports = authController;

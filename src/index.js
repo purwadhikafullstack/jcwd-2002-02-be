@@ -27,7 +27,7 @@ const { authRoutes, productRoutes, userRoutes } = require("./routes");
 
 app.use("/auth", authRoutes);
 app.use("/product", productRoutes);
-app.use("/user", userRoutes)
+app.use("/user", userRoutes);
 
 app.listen(PORT, () => {
   console.log("Listening in Port: ", PORT);
