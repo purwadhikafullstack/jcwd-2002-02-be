@@ -12,10 +12,9 @@ const moment = require("moment");
 const fs = require("fs");
 const mustache = require("mustache");
 const bcrypt = require("bcrypt");
-// const { generateToken } = require("../../lib/jwt");
 
 class AuthService extends Service {
-  static registerUser = async (username, email, name, hashedPassword) => {
+  static registerUser = async (username, email, name, password) => {
     try {
       const isUsernameOrEmailTaken = await User.findOne({
         where: {
@@ -29,6 +28,8 @@ class AuthService extends Service {
           message: "Username or email has been taken!",
         });
       }
+
+      const hashedPassword = bcrypt.hashSync(password, 5);
 
       const registerUser = await User.create({
         username,
@@ -66,7 +67,7 @@ class AuthService extends Service {
       return this.handleSuccess({
         statusCode: 201,
         message:
-          "User Registered, please check your email to verify your account!",
+          "Account Registered, please check your email to verify your account!",
         data: registerUser,
       });
     } catch (err) {
