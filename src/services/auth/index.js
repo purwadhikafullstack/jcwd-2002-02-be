@@ -81,7 +81,7 @@ class AuthService extends Service {
     }
   };
 
-  static registerAdmin = async (username, email, name, hashedPassword) => {
+  static registerAdmin = async (username, email, name, password) => {
     try {
       const isUsernameOrEmailTaken = await Admin.findOne({
         where: {
@@ -95,6 +95,8 @@ class AuthService extends Service {
           message: "Username or email has been taken!",
         });
       }
+
+      const hashedPassword = bcrypt.hashSync(password, 5);
 
       const registerUser = await Admin.create({
         username,

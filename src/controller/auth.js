@@ -140,8 +140,6 @@ const authController = {
     try {
       const { name, username, email, password } = req.body;
 
-      const hashedPassword = bcrypt.hashSync(password, 5);
-
       const serviceResult = await AuthService.registerAdmin(
         username,
         email,
