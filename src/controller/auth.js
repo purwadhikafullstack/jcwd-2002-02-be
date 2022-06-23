@@ -230,7 +230,7 @@ const authController = {
     try {
       const { id } = req.params;
 
-      const serviceResult = await AuthService.editAvatarUser(id);
+      const serviceResult = await AuthService.editAvatarUser(id, req.file);
       if (!serviceResult.success) throw serviceResult;
       return res.status(serviceResult.statusCode || 200).json({
         message: serviceResult.message,

@@ -1,5 +1,5 @@
 const multer = require("multer");
-const nanoid = require("nanoid");
+const { nanoid } = require("nanoid");
 
 const fileUploader = ({
   destinationFolder = "avatar",
@@ -18,7 +18,7 @@ const fileUploader = ({
   });
   const uploader = multer({
     storage: storageConfig,
-    fileFilter: (req, res, cb) => {
+    fileFilter: (req, file, cb) => {
       console.log(file);
 
       if (file.mimetype.split("/")[0] != fileType) {
