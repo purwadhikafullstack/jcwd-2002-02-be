@@ -175,11 +175,11 @@ class AuthService extends Service {
     }
   };
 
-  static keepLoginAdmin = async (token) => {
+  static keepLoginAdmin = async (token, admin) => {
     try {
       const renewedToken = nanoid(64);
 
-      const findUser = await Admin.findByPk(token.admin_id);
+      const findUser = await Admin.findByPk(admin.id);
 
       delete findUser.dataValues.password;
 
