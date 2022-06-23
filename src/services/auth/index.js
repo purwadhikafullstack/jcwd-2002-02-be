@@ -217,7 +217,7 @@ class AuthService extends Service {
     try {
       const renewedToken = nanoid(64);
 
-      const findUser = await Admin.findByPk(token.admin_id);
+      const findUser = await Admin.findByPk(admin.id);
 
       delete findUser.dataValues.password;
 
