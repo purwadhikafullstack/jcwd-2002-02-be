@@ -15,13 +15,15 @@ const authorizedLoginUser = async (req, res, next) => {
       },
     });
 
+
     if (!validateToken) {
       return res.status(401).json({
         message: "Token is not valid",
       });
     }
-    req.token = { token: validateToken.token, id: validateToken.id };
-    req.user = { id: validateToken.userId };
+
+    req.token = {token: validateToken.token, id: validateToken.id};
+    req.user = {id: validateToken.userId}
 
     next();
   } catch (err) {
