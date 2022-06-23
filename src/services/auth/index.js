@@ -16,7 +16,7 @@ const bcrypt = require("bcrypt");
 // const { generateToken } = require("../../lib/jwt");
 
 class AuthService extends Service {
-  static registerUser = async (username, email, name, hashedPassword) => {
+  static registerUser = async (username, email, name, password) => {
     try {
       const isUsernameOrEmailTaken = await User.findOne({
         where: {
