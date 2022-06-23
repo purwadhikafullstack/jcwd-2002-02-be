@@ -5,7 +5,6 @@ const moment = require("moment");
 const authorizedLoginUser = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    // AdminLoginSession
     const validateToken = await UserLoginSession.findOne({
       where: {
         token,
@@ -21,7 +20,6 @@ const authorizedLoginUser = async (req, res, next) => {
         message: "Token is not valid",
       });
     }
-
     req.token = { token: validateToken.token, id: validateToken.id };
     req.user = { id: validateToken.userId };
 
