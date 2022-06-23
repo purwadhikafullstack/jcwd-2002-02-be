@@ -234,6 +234,7 @@ const authController = {
       if (!serviceResult.success) throw serviceResult;
       return res.status(serviceResult.statusCode || 200).json({
         message: serviceResult.message,
+        result: serviceResult.data,
       });
     } catch (err) {
       console.log(err);

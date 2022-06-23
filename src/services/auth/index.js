@@ -16,8 +16,9 @@ const bcrypt = require("bcrypt");
 // const { generateToken } = require("../../lib/jwt");
 
 class AuthService extends Service {
-  static registerUser = async (username, email, name, hashedPassword) => {
+  static registerUser = async (username, email, name, password) => {
     try {
+      const hashedPassword = bcrypt.hashSync(password, 5);
       const isUsernameOrEmailTaken = await User.findOne({
         where: {
           [Op.or]: [{ username }, { email }],
@@ -278,9 +279,13 @@ class AuthService extends Service {
           },
         }
       );
+
+      const userInfo = await User.findByPk(id);
+
       return this.handleSuccess({
         statusCode: 200,
         message: "Avatar edited successfully!",
+        data: userInfo,
       });
     } catch (err) {
       console.log(err);
@@ -294,89 +299,94 @@ class AuthService extends Service {
     try {
       const findUser = await User.findOne({
         where: {
-          [Op.or]: [{username: credential}, {email: credential}]
-        }
-      })
+          [Op.or]: [{ username: credential }, { email: credential }],
+        },
+      });
 
-      const comparePassword = bcrypt.compareSync(password, findUser.password)
+      const comparePassword = bcrypt.compareSync(password, findUser.password);
 
-      if(!findUser || !comparePassword) {
+      if (!findUser || !comparePassword) {
         return this.handleError({
           message: "Wrong Username, email or password!",
-          statusCode: 400
-        })
+          statusCode: 400,
+        });
       }
 
-      delete findUser.dataValues.password
+      delete findUser.dataValues.password;
 
-      await UserLoginSession.update({
-        is_valid: false
-      }, {
-        where:  {
-          userId: findUser.id,
-          is_valid: true
+      await UserLoginSession.update(
+        {
+          is_valid: false,
+        },
+        {
+          where: {
+            userId: findUser.id,
+            is_valid: true,
+          },
         }
-      })
+      );
 
-      const sessionToken = nanoid(64)
+      const sessionToken = nanoid(64);
 
       await UserLoginSession.create({
         token: sessionToken,
         userId: findUser.id,
         is_valid: true,
-        valid_until: moment().add(1, "day")
-      })
-
+        valid_until: moment().add(1, "day"),
+      });
 
       return this.handleSuccess({
         statusCode: 200,
         message: "Login Success!",
         data: {
           user: findUser,
-          token: sessionToken }
-      })
-      
+          token: sessionToken,
+        },
+      });
     } catch (err) {
       console.log(err);
       return this.handleError({
         statusCode: 500,
-        message: "Can't reach auth server"
-      })
+        message: "Can't reach auth server",
+      });
     }
   };
 
   static keepLoginUser = async (token, user) => {
     try {
-      const newToken = nanoid(64)
-      const findUser = await User.findByPk(user.id)
-      
-      delete findUser.dataValues.password
+      const newToken = nanoid(64);
+      const findUser = await User.findByPk(user.id);
 
-      await UserLoginSession.update({
-        token: newToken,
-        valid_until: moment().add(1, "day")
-      }, {
-        where: {
-          id: token.id
+      delete findUser.dataValues.password;
+
+      await UserLoginSession.update(
+        {
+          token: newToken,
+          valid_until: moment().add(1, "day"),
+        },
+        {
+          where: {
+            id: token.id,
+          },
         }
-      })
+      );
 
       return this.handleSuccess({
         statusCode: 200,
         message: "Token just Updated!",
         data: {
           user: findUser,
-          token: newToken
-        }
-      })
+          token: newToken,
+        },
+      });
     } catch (err) {
       console.log(err);
       return this.handleError({
         message: "Can't reach token server",
-        statusCode: 500
-      })
+        statusCode: 500,
+      });
     }
-  }
+  };
 }
 
 module.exports = AuthService;
