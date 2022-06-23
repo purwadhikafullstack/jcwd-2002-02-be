@@ -215,7 +215,8 @@ const authController = {
 
   resendVerificationEmail: async (req, res) => {
     try {
-      const serviceResult = await AuthService.resendVerificationToken(req);
+      const userId = req.user.id;
+      const serviceResult = await AuthService.resendVerificationToken(userId);
 
       if (!serviceResult.success) throw serviceResult;
 
