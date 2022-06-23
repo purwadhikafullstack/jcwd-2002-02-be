@@ -22,4 +22,7 @@ router.post(
 
 router.post("/login", authController.loginUser)
 
+router.get("/refresh-token", authorizedLoginUser, authController.keepLoginUser)
+
+
 module.exports = router;

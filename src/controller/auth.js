@@ -141,6 +141,25 @@ const authController = {
         message: err.message
       })
     }
+  },
+
+  keepLoginUser: async (req, res) => {
+    try {
+      const {token, user} = req
+      const serviceResult = await AuthService.keepLoginUser(token, user)
+
+      if(!serviceResult.success) throw serviceResult
+
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+        result: serviceResult.data
+      })
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message
+      })
+    }
   }
 };
 

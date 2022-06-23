@@ -365,7 +365,40 @@ class AuthService extends Service {
       console.log(err);
       return this.handleError({
         statusCode: 500,
-        message: "Can't reach user server"
+        message: "Can't reach auth server"
+      })
+    }
+  };
+
+  static keepLoginUser = async (token, user) => {
+    try {
+      const newToken = nanoid(64)
+      const findUser = await User.findByPk(user.id)
+      
+      delete findUser.dataValues.password
+
+      await UserLoginSession.update({
+        token: newToken,
+        valid_until: moment().add(1, "day")
+      }, {
+        where: {
+          id: token.id
+        }
+      })
+
+      return this.handleSuccess({
+        statusCode: 200,
+        message: "Token just Updated!",
+        data: {
+          user: findUser,
+          token: newToken
+        }
+      })
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Can't reach token server",
+        statusCode: 500
       })
     }
   }
