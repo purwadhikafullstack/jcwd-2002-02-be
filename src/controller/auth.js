@@ -125,8 +125,8 @@ const authController = {
 
   keepLoginAdmin: async (req, res) => {
     try {
-      const { token } = req;
-      const serviceResult = await AuthService.keepLoginAdmin(token);
+      const { adminToken, admin } = req;
+      const serviceResult = await AuthService.keepLoginAdmin(adminToken, admin);
       if (!serviceResult.success) throw serviceResult;
       return res.status(serviceResult.statusCode || 200).json({
         message: serviceResult.message,
