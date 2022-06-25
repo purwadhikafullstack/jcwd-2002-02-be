@@ -30,4 +30,10 @@ router.post("/login", authController.loginUser);
 
 router.get("/refresh-token", authorizedLoginUser, authController.keepLoginUser);
 
+router.post(
+  "/change-password",
+  authorizedLoginUser,
+  authController.changePassword
+);
+
 module.exports = router;
