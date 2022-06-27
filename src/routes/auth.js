@@ -41,4 +41,6 @@ router.post(
   authController.sendResetPasswordEmail
 );
 
+router.post("/reset-password", authController.resetPassword);
+
 module.exports = router;

@@ -508,6 +508,49 @@ class AuthService extends Service {
       });
     }
   };
+
+  static resetPassword = async (password, passwordToken) => {
+    try {
+      const validateToken = await ForgotPasswordToken.findOne({
+        where: {
+          token: passwordToken,
+          is_valid: true,
+          valid_until: {
+            [Op.gt]: moment().utc(),
+          },
+        },
+      });
+
+      if (!validateToken) {
+        return this.handleError({
+          message: "Token is invalid or has expired!",
+          statusCode: 400,
+        });
+      }
+
+      const hashedPassword = bcrypt.hashSync(password, 5);
+
+      await User.update(
+        { password: hashedPassword },
+        {
+          where: {
+            id: validateToken.userId,
+          },
+        }
+      );
+
+      return this.handleSuccess({
+        message: "Password has been changed!",
+        statusCode: 200,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
 }
 
 module.exports = AuthService;
