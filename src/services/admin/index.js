@@ -1,4 +1,10 @@
-const { Produk, KategoriProduk } = require("../../lib/sequelize");
+const sequelize = require("sequelize");
+const {
+  Produk,
+  KategoriProduk,
+  Stok,
+  StokStatus,
+} = require("../../lib/sequelize");
 const Service = require("../service");
 
 class AdminService extends Service {
@@ -51,6 +57,54 @@ class AdminService extends Service {
       console.log(err);
       return this.handleError({
         message: "Can't Reach Product Server",
+        statusCode: 500,
+      });
+    }
+  };
+
+  static getProductList = async (query) => {
+    try {
+      const { _limit = 30, _page = 1, _sortBy = "", _sortDir = "" } = query;
+
+      delete query._limit;
+      delete query._page;
+      delete query._sortBy;
+      delete query._sortDir;
+
+      const findProducts = await Produk.findAndCountAll({
+        where: {
+          ...query,
+        },
+        limit: _limit ? parseInt(_limit) : undefined,
+        offset: (_page - 1) * _limit,
+        distinct: true,
+        order: _sortBy ? [[_sortBy, _sortDir]] : undefined,
+        include: {
+          model: Stok,
+          attributes: [
+            "productId",
+            [sequelize.fn("sum", sequelize.col("jumlah_stok")), "total_stok"],
+          ],
+          group: "productId",
+        },
+      });
+
+      if (!findProducts) {
+        return this.handleError({
+          message: "No product found!",
+          statusCode: 400,
+        });
+      }
+
+      return this.handleSuccess({
+        message: "Products found",
+        statusCode: 200,
+        data: findProducts,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
         statusCode: 500,
       });
     }
