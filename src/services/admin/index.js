@@ -64,7 +64,7 @@ class AdminService extends Service {
 
   static getProductList = async (query) => {
     try {
-      const { _limit = 30, _page = 1, _sortBy = "", _sortDir = "" } = query;
+      const { _limit = 30, _page = 0, _sortBy = "", _sortDir = "" } = query;
 
       delete query._limit;
       delete query._page;
@@ -76,17 +76,17 @@ class AdminService extends Service {
           ...query,
         },
         limit: _limit ? parseInt(_limit) : undefined,
-        offset: (_page - 1) * _limit,
+        offset: _page * _limit,
         distinct: true,
         order: _sortBy ? [[_sortBy, _sortDir]] : undefined,
-        include: {
-          model: Stok,
-          attributes: [
-            "productId",
-            [sequelize.fn("sum", sequelize.col("jumlah_stok")), "total_stok"],
-          ],
-          group: "productId",
-        },
+        include: [
+          {
+            model: Stok,
+          },
+          {
+            model: KategoriProduk,
+          },
+        ],
       });
 
       if (!findProducts) {
