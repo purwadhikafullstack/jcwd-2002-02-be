@@ -43,6 +43,8 @@ class ProductService extends Service {
         _sortDir = "",
         hargaMinimum,
         hargaMaksimum,
+        kategoriTerpilih,
+        searchProduk,
       } = query;
 
       delete query._limit;
@@ -51,6 +53,14 @@ class ProductService extends Service {
       delete query._sortDir;
       delete query.hargaMinimum;
       delete query.hargaMaksimum;
+      delete query.kategoriTerpilih;
+      delete query.searchProduk;
+
+      const whereCategoryClause = {};
+
+      if (kategoriTerpilih) {
+        whereCategoryClause.productCategoryId = kategoriTerpilih;
+      }
 
       const findProducts = await Produk.findAndCountAll({
         where: {
@@ -58,6 +68,10 @@ class ProductService extends Service {
           harga: {
             [Op.between]: [hargaMinimum || 0, hargaMaksimum || 9999999999],
           },
+          nama_produk: {
+            [Op.like]: `%${searchProduk}%`,
+          },
+          ...whereCategoryClause,
         },
         limit: _limit ? parseInt(_limit) : undefined,
         offset: (_page - 1) * _limit,
