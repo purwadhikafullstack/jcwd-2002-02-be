@@ -57,20 +57,25 @@ class ProductService extends Service {
       delete query.searchProduk;
 
       const whereCategoryClause = {};
+      const searchByNameClause = {};
 
       if (kategoriTerpilih) {
         whereCategoryClause.productCategoryId = kategoriTerpilih;
       }
 
+      if (searchProduk) {
+        searchByNameClause = {
+          nama_produk: { [Op.like]: `%${searchProduk}%` },
+        };
+      }
+
       const findProducts = await Produk.findAndCountAll({
         where: {
           ...query,
-          harga: {
+          harga_jual: {
             [Op.between]: [hargaMinimum || 0, hargaMaksimum || 9999999999],
           },
-          nama_produk: {
-            [Op.like]: `%${searchProduk}%`,
-          },
+          ...searchByNameClause,
           ...whereCategoryClause,
         },
         limit: _limit ? parseInt(_limit) : undefined,
