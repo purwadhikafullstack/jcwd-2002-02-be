@@ -80,7 +80,7 @@ MutasiStok.belongsTo(TipeMutasi);
 User.hasMany(DaftarTransaksi);
 DaftarTransaksi.belongsTo(User);
 
-StatusTransaksi.hasOne(DaftarTransaksi);
+StatusTransaksi.hasMany(DaftarTransaksi);
 DaftarTransaksi.belongsTo(StatusTransaksi);
 
 DaftarTransaksi.hasMany(DetailTransaksi);
