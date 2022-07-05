@@ -6,12 +6,6 @@ const cartController = {
       const userId = req.user.id;
       const { productId, quantity } = req.body;
 
-      // const serviceResult = await CartService.addToCart(
-      //   productId,
-      //   userId,
-      //   quantity
-      // );
-
       const serviceResult = await CartService.addToCart(
         productId,
         userId,
