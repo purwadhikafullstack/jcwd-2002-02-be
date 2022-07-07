@@ -23,7 +23,6 @@ class CartService extends Service {
             },
           }
         );
-        console.log(res, "update");
       } else {
         await Cart.create({
           productId,
