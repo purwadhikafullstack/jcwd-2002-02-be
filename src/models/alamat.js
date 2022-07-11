@@ -33,9 +33,6 @@ const Alamat = (sequelize) => {
     kota_kabupaten_id: {
       type: DataTypes.INTEGER,
     },
-    kota_id: {
-      type: DataTypes.INTEGER,
-    },
     kecamatan: {
       type: DataTypes.STRING,
     },

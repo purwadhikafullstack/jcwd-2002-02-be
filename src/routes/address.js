@@ -13,4 +13,18 @@ router.post(
   addressControllers.addNewAddress
 );
 
+router.get(
+  "/get-all-address",
+  authorizedLoginUser,
+  addressControllers.getAllAddress
+);
+
+router.get(
+  "/get-main-address",
+  authorizedLoginUser,
+  addressControllers.getMainAddress
+);
+
+router.post("/cost", addressControllers.getOngkir);
+
 module.exports = router;
