@@ -10,17 +10,40 @@ const endOfMonth = moment().endOf("month").format("YYYY-MM-DD hh:mm");
 const nextThreeMonth = moment().add(3, "months");
 
 class ReportService extends Service {
-  static getTransactionCount = async (userId) => {
+  static getTransactionCount = async (stateOfDate = "Harian") => {
     try {
-      const countNewOrder = await DaftarTransaksi.count({
-        where: {
-          createdAt: {
-            [Op.gt]: TODAY_START,
-            [Op.lt]: NOW,
+      let countNewOrder;
+      if (stateOfDate === "Harian") {
+        countNewOrder = await DaftarTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: TODAY_START,
+              [Op.lt]: NOW,
+            },
           },
-        },
-        group: ["paymentStatusId"],
-      });
+          group: ["paymentStatusId"],
+        });
+      } else if (stateOfDate === "Mingguan") {
+        countNewOrder = await DaftarTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "week"),
+              [Op.lt]: NOW,
+            },
+          },
+          group: ["paymentStatusId"],
+        });
+      } else if (stateOfDate === "Bulanan") {
+        countNewOrder = await DaftarTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "month"),
+              [Op.lt]: NOW,
+            },
+          },
+          group: ["paymentStatusId"],
+        });
+      }
 
       return this.handleSuccess({
         message: "Transaction found!",

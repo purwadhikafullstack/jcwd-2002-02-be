@@ -3,7 +3,10 @@ const ReportService = require("../services/report");
 const ReportController = {
   getTransactionCount: async (req, res) => {
     try {
-      const serviceResult = await ReportService.getTransactionCount();
+      const { stateOfDate } = req.body;
+      const serviceResult = await ReportService.getTransactionCount(
+        stateOfDate
+      );
 
       if (!serviceResult.success) throw serviceResult;
       return res.status(serviceResult.statusCode || 200).json({
