@@ -140,6 +140,50 @@ class ReportService extends Service {
       });
     }
   };
+
+  static getTodayStok = async () => {
+    try {
+      const todayStok = await Stok.findAll({
+        where: {
+          stockStatusId: 1,
+        },
+        attributes: [
+          [sequelize.fn("sum", sequelize.col("jumlah_stok")), "sum"],
+        ],
+        raw: true,
+      });
+
+      const yesterdayStok = await Stok.findAll({
+        where: {
+          stockStatusId: 1,
+          updatedAt: {
+            [Op.lt]: TODAY_START,
+          },
+        },
+        attributes: [
+          [sequelize.fn("sum", sequelize.col("jumlah_stok")), "sum"],
+        ],
+        raw: true,
+      });
+
+      const stokInfo = {
+        todayStok: todayStok[0],
+        yesterdayStok: yesterdayStok[0],
+      };
+
+      return this.handleSuccess({
+        message: "Stok Found",
+        statusCode: 200,
+        data: stokInfo,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
 }
 
 module.exports = ReportService;
