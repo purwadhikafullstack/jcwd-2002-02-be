@@ -17,4 +17,12 @@ router.post(
   transactionControllers.uploadResepDokter
 );
 
+router.get("/get-payment-method", transactionControllers.getAllPaymentMethod);
+
+router.post(
+  "/add-new-transaction",
+  authorizedLoginUser,
+  transactionControllers.createTransaction
+);
+
 module.exports = router;
