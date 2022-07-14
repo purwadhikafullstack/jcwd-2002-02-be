@@ -7,5 +7,6 @@ router.get("/get-exp-product", ReportController.getExpProduct);
 router.get("/get-today-transaction", ReportController.getTodayTransaction);
 router.get("/get-today-stok", ReportController.getTodayStok);
 router.post("/get-penjualan", ReportController.getPenjualan);
+router.get("/get-today-revenue", ReportController.getTodayRevenue);
 
 module.exports = router;

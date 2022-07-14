@@ -1,7 +1,11 @@
 const moment = require("moment");
 const Sequelize = require("sequelize");
 const { Op } = require("sequelize");
-const { DaftarTransaksi, Stok } = require("../../lib/sequelize");
+const {
+  DaftarTransaksi,
+  Stok,
+  DetailTransaksi,
+} = require("../../lib/sequelize");
 const Service = require("../service");
 const { sequelize } = require("../../lib/sequelize");
 
@@ -230,6 +234,53 @@ class ReportService extends Service {
         message: "Sales Found",
         statusCode: 200,
         data: results,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
+
+  static getTodayRevenue = async () => {
+    try {
+      const todayRevenue = await DetailTransaksi.findAll({
+        where: {
+          createdAt: {
+            [Op.gt]: TODAY_START,
+            [Op.lt]: NOW,
+          },
+        },
+        attributes: [
+          [Sequelize.literal("SUM(price_when_sold * quantity)"), "result"],
+        ],
+        raw: true,
+      });
+
+      const yesterdayRevenue = await DetailTransaksi.findAll({
+        where: {
+          createdAt: {
+            [Op.gt]: moment(TODAY_START).subtract(1, "day"),
+            [Op.lt]: TODAY_START,
+          },
+        },
+        attributes: [
+          [Sequelize.literal("SUM(price_when_sold * quantity)"), "result"],
+        ],
+        raw: true,
+      });
+
+      const revenue = {
+        todayRevenue: todayRevenue[0],
+        yesterdayRevenue: yesterdayRevenue[0],
+      };
+
+      return this.handleSuccess({
+        message: "Today Revenue Found!",
+        statusCode: 200,
+        data: revenue,
       });
     } catch (err) {
       console.log(err);
