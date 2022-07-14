@@ -290,6 +290,68 @@ class ReportService extends Service {
       });
     }
   };
+
+  static getProfit = async (stateOfDate = "Bulanan") => {
+    try {
+      let revenue;
+      let capital;
+
+      if (stateOfDate === "Mingguan") {
+        const [resultRevenue, metadata] = await sequelize.query(
+          "SELECT WEEK(createdAt) as `week`, sum(price_when_sold * quantity) AS `sum` FROM `transaction_details` AS `transaction_details` GROUP BY WEEK(createdAt) ORDER BY WEEK(createdAt) ASC"
+        );
+
+        const [resultCapital, metaData] = await sequelize.query(
+          "SELECT Week(createdAt), sum(price * amount) AS `sum` FROM `purchase_orders` AS `purchase_orders` WHERE WEEK(createdAt) GROUP BY WEEK(createdAt) ORDER BY WEEK(createdAt) ASC"
+        );
+
+        capital = resultCapital;
+        revenue = resultRevenue;
+      } else if (stateOfDate === "Bulanan") {
+        const [resultRevenue, metadata] = await sequelize.query(
+          "SELECT createdAt as `month`, sum(price_when_sold * quantity) AS `sum` FROM `transaction_details` AS `transaction_details` WHERE YEAR (createdAt) = " +
+            moment().format("YYYY") +
+            " GROUP BY MONTH(createdAt) ORDER BY MONTH(createdAt) ASC"
+        );
+        const [resultCapital, metaData] = await sequelize.query(
+          "SELECT createdAt as `month`, sum(price * amount) AS `sum` FROM `purchase_orders` AS `purchase_orders` WHERE YEAR (createdAt) = " +
+            moment().format("YYYY") +
+            " GROUP BY MONTH(createdAt) ORDER BY MONTH(createdAt) ASC"
+        );
+
+        capital = resultCapital;
+        revenue = resultRevenue;
+      } else if (stateOfDate === "Tahunan") {
+        const [resultRevenue, metadata] = await sequelize.query(
+          "SELECT createdAt as `year`, sum(price_when_sold * quantity) AS `sum` FROM `transaction_details` AS `transaction_details` GROUP BY YEAR(createdAt) ORDER BY YEAR(createdAt) ASC"
+        );
+
+        const [resultCapital, metaData] = await sequelize.query(
+          "SELECT createdAt as `year`, sum(price * amount) AS `sum` FROM `purchase_orders` AS `purchase_orders` WHERE YEAR(createdAt) GROUP BY YEAR(createdAt) ORDER BY YEAR(createdAt) ASC"
+        );
+
+        capital = resultCapital;
+        revenue = resultRevenue;
+      }
+
+      let data = {
+        revenue,
+        capital,
+      };
+
+      return this.handleSuccess({
+        message: "Profit Found!",
+        statusCode: 200,
+        data,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
 }
 
 module.exports = ReportService;
