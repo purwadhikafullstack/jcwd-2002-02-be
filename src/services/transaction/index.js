@@ -179,6 +179,34 @@ class TransactionService extends Service {
       });
     }
   };
+
+  static getPaymentMethodById = async (methodId) => {
+    try {
+      const findPaymentMethod = await MetodePembayaran.findOne({
+        where: {
+          id: methodId,
+        },
+      });
+
+      if (!findPaymentMethod) {
+        return this.handleError({
+          message: `No method with id: ${id} found!`,
+        });
+      }
+
+      return this.handleSuccess({
+        message: "Method found",
+        statusCode: 200,
+        data: findPaymentMethod,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error",
+        statusCode: 500,
+      });
+    }
+  };
 }
 
 module.exports = TransactionService;

@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const { Cart, Produk } = require("../../lib/sequelize");
+const { checkout } = require("../../routes/transaction");
 const Service = require("../service");
 
 class CartService extends Service {
@@ -76,16 +77,29 @@ class CartService extends Service {
     }
   };
 
-  static getCartById = async (cartId) => {
+  static getCartById = async (cartId, show = "checkout") => {
     try {
-      const getCartData = await Cart.findAndCountAll({
-        where: {
-          id: {
-            [Op.in]: cartId,
+      let getCartData;
+      if (show == "checkout") {
+        getCartData = await Cart.findAndCountAll({
+          where: {
+            id: {
+              [Op.in]: cartId,
+            },
           },
-        },
-        include: Produk,
-      });
+          include: Produk,
+        });
+      } else if (show == "konfirmasi") {
+        getCartData = await Cart.findAndCountAll({
+          where: {
+            id: {
+              [Op.in]: cartId,
+            },
+          },
+          include: Produk,
+          paranoid: false,
+        });
+      }
 
       if (!getCartData) {
         return this.handleError({

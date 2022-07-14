@@ -75,6 +75,22 @@ const transactionControllers = {
       });
     }
   },
+  getPaymentMethodById: async (req, res) => {
+    try {
+      const { id } = req.body;
+      const serviceResult = await TransactionService.getPaymentMethodById(id);
+      if (!serviceResult.success) throw serviceResult;
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+        result: serviceResult.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
 };
 
 module.exports = transactionControllers;

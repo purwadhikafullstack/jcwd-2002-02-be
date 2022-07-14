@@ -46,8 +46,8 @@ const cartController = {
   },
   getCartById: async (req, res) => {
     try {
-      const { cartId } = req.body;
-      const serviceResult = await CartService.getCartById(cartId);
+      const { cartId, show } = req.body;
+      const serviceResult = await CartService.getCartById(cartId, show);
       if (!serviceResult.success) throw serviceResult;
       return res.status(serviceResult.statusCode).json({
         message: serviceResult.message,
