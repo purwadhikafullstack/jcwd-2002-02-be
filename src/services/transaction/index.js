@@ -6,6 +6,8 @@ const {
   Produk,
   MetodePembayaran,
   Cart,
+  User,
+  Alamat,
 } = require("../../lib/sequelize");
 const { nanoid } = require("nanoid");
 const { Op } = require("sequelize");
@@ -14,7 +16,7 @@ class TransactionService extends Service {
   static getAllTransaction = async (query) => {
     try {
       const {
-        _limit = 30,
+        _limit = 100,
         _page = 1,
         _sortBy = "",
         _sortDir = "",
@@ -46,6 +48,12 @@ class TransactionService extends Service {
             model: DetailTransaksi,
             include: Produk,
           },
+          {
+            model: User,
+          },
+          {
+            model: Alamat,
+          },
         ],
         limit: _limit ? parseInt(_limit) : undefined,
         offset: (_page - 1) * _limit,
@@ -73,7 +81,12 @@ class TransactionService extends Service {
     }
   };
 
-  static createTransaction = async (total_price, userId, cartId = []) => {
+  static createTransaction = async (
+    total_price,
+    userId,
+    cartId = [],
+    addressId
+  ) => {
     try {
       const newTransaction = await DaftarTransaksi.create({
         total_price,
@@ -82,6 +95,7 @@ class TransactionService extends Service {
         paymentStatusId: 1,
         resep_image_url: null,
         nomor_resep: null,
+        addressId,
       });
 
       const findCart = await Cart.findAll({
@@ -126,7 +140,7 @@ class TransactionService extends Service {
     }
   };
 
-  static uploadResepDokter = async (file, userId) => {
+  static uploadResepDokter = async (file, userId, addressId) => {
     try {
       const uploadFileDomain = process.env.UPLOAD_FILE_DOMAIN;
       const filePath = "resep";
@@ -135,12 +149,13 @@ class TransactionService extends Service {
       const newResep = `${uploadFileDomain}/${filePath}/${filename}`;
       const resep = await DaftarTransaksi.create({
         // KASIH TAU KE TEMEN" INI DI TABEL GANTI NAMA
-        total_price: 10000,
+        total_price: 0,
         resep_image_url: newResep,
         is_resep: true,
         userId,
         paymentStatusId: 1,
         nomor_resep: `NO.RESEP#${nomorResep}`,
+        addressId,
       });
 
       return this.handleSuccess({

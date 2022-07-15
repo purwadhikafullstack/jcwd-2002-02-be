@@ -21,12 +21,13 @@ const transactionControllers = {
     try {
       const user_id = req.user.id;
 
-      const { total_price, cartId } = req.body;
+      const { total_price, cartId, addressId } = req.body;
 
       const serviceResult = await TransactionService.createTransaction(
         total_price,
         user_id,
-        cartId
+        cartId,
+        addressId
       );
 
       if (!serviceResult.success) throw serviceResult;
@@ -44,9 +45,11 @@ const transactionControllers = {
   uploadResepDokter: async (req, res) => {
     try {
       const user_id = req.user.id;
+      const { addressId } = req.body;
       const serviceResult = await TransactionService.uploadResepDokter(
         req.file,
-        user_id
+        user_id,
+        addressId
       );
       if (!serviceResult.success) throw serviceResult;
       return res.status(serviceResult.statusCode || 200).json({
