@@ -33,6 +33,27 @@ const productControllers = {
       });
     }
   },
+
+  recordUserProduct: async (req, res) => {
+    try {
+      const user_id = req.user.id;
+      const { product_id } = req.body;
+      const serviceResult = await ProductService.recordUserProduct(
+        user_id,
+        product_id
+      );
+      if (!serviceResult.success) throw serviceResult;
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+        result: serviceResult.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
 };
 
 module.exports = productControllers;
