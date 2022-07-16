@@ -10,5 +10,6 @@ router.post("/get-penjualan", ReportController.getPenjualan);
 router.get("/get-today-revenue", ReportController.getTodayRevenue);
 router.post("/get-profit", ReportController.getProfit);
 router.post("/get-pembatalan", ReportController.getPembatalan);
+router.post("/get-product-qty-sold", ReportController.getProductQuantitySold);
 
 module.exports = router;

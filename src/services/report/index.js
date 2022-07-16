@@ -385,6 +385,105 @@ class ReportService extends Service {
       });
     }
   };
+
+  static getProductQuantitySold = async (
+    productId,
+    stateOfDate = "Bulanan"
+  ) => {
+    try {
+      let qtySold, yesterdayQtySold;
+
+      if (stateOfDate === "Mingguan") {
+        qtySold = await DetailTransaksi.findAll({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "week"),
+              [Op.lt]: NOW,
+            },
+            productId,
+          },
+          attributes: [[Sequelize.fn("sum", Sequelize.col("quantity")), "sum"]],
+          raw: true,
+        });
+
+        yesterdayQtySold = await DetailTransaksi.findAll({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "weeks"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "week"),
+            },
+            productId,
+          },
+          attributes: [[Sequelize.fn("sum", Sequelize.col("quantity")), "sum"]],
+          raw: true,
+        });
+      } else if (stateOfDate === "Bulanan") {
+        qtySold = await DetailTransaksi.findAll({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "month"),
+              [Op.lt]: NOW,
+            },
+            productId,
+          },
+          attributes: [[Sequelize.fn("sum", Sequelize.col("quantity")), "sum"]],
+          raw: true,
+        });
+
+        yesterdayQtySold = await DetailTransaksi.findAll({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "months"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "month"),
+            },
+            productId,
+          },
+          attributes: [[Sequelize.fn("sum", Sequelize.col("quantity")), "sum"]],
+          raw: true,
+        });
+      } else if (stateOfDate === "Tahunan") {
+        qtySold = await DetailTransaksi.findAll({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "year"),
+              [Op.lt]: NOW,
+            },
+            productId,
+          },
+          attributes: [[Sequelize.fn("sum", Sequelize.col("quantity")), "sum"]],
+          raw: true,
+        });
+
+        yesterdayQtySold = await DetailTransaksi.findAll({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "years"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "year"),
+            },
+            productId,
+          },
+          attributes: [[Sequelize.fn("sum", Sequelize.col("quantity")), "sum"]],
+          raw: true,
+        });
+      }
+
+      const qtySoldData = {
+        data: qtySold[0].sum,
+        prevData: yesterdayQtySold[0].sum,
+      };
+      return this.handleSuccess({
+        message: "Product Report Found",
+        statusCode: 200,
+        data: qtySoldData,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
 }
 
 module.exports = ReportService;
