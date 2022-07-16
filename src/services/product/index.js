@@ -124,6 +124,27 @@ class ProductService extends Service {
       });
     }
   };
+
+  static getAllProductName = async () => {
+    try {
+      const findProduct = await Produk.findAll({
+        sort: [["nama_produk", "DESC"]],
+        attributes: ["nama_produk", "id"],
+      });
+
+      return this.handleSuccess({
+        message: "Products found",
+        statusCode: 200,
+        data: findProduct,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error",
+        statusCode: 500,
+      });
+    }
+  };
 }
 
 module.exports = ProductService;
