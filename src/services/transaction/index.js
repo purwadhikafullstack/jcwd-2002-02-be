@@ -20,6 +20,7 @@ class TransactionService extends Service {
         _sortBy = "",
         _sortDir = "",
         statusTerpilih,
+        username,
       } = query;
 
       delete query._limit;
@@ -27,11 +28,33 @@ class TransactionService extends Service {
       delete query._sortBy;
       delete query._sortDir;
       delete query.statusTerpilih;
+      delete query.username;
 
       const statusClause = {};
+      let userClause = {};
 
       if (statusTerpilih) {
         statusClause.paymentStatusId = statusTerpilih;
+      }
+
+      if (username) {
+        userClause = {
+          username: { [Op.like]: `%${username}` },
+        };
+
+        const findUser = await User.findOne({
+          where: {
+            ...userClause,
+          },
+        });
+
+        if (!findUser) {
+          return this.handleError({
+            message: "User not found",
+          });
+        }
+
+        query.userId = findUser.id;
       }
 
       const findTransactions = await DaftarTransaksi.findAndCountAll({
