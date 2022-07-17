@@ -13,5 +13,6 @@ router.post("/get-pembatalan", ReportController.getPembatalan);
 router.post("/get-product-qty-sold", ReportController.getProductQuantitySold);
 router.post("/get-product-viewed-count", ReportController.getItemViewedCount);
 router.post("/get-product-sold-count", ReportController.getProductSoldCount);
+router.post("/get-product-revenue", ReportController.getRevenuePerProduct);
 
 module.exports = router;

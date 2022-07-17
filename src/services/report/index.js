@@ -665,6 +665,43 @@ class ReportService extends Service {
       });
     }
   };
+
+  static getRevenuePerProduct = async (productId, stateOfDate = "Bulanan") => {
+    try {
+      let results, metadata;
+
+      if (stateOfDate === "Mingguan") {
+        [results, metadata] = await sequelize.query(
+          "SELECT WEEK(createdAt) as `week`, sum(quantity * price_when_sold) AS `sum` FROM `transaction_details` AS `transaction_details` WHERE productId = " +
+            productId +
+            " GROUP BY WEEK(createdAt) ORDER BY WEEK(createdAt) ASC"
+        );
+      } else if (stateOfDate === "Bulanan") {
+        [results, metadata] = await sequelize.query(
+          `SELECT createdAt as \`month\`, sum(quantity * price_when_sold) AS \`sum\` FROM \`transaction_details\` AS \`transaction_details\` WHERE productId = ${productId} AND YEAR (createdAt) = ${moment().format(
+            "YYYY"
+          )} GROUP BY MONTH(createdAt) ORDER BY MONTH(createdAt) ASC`
+        );
+      } else if (stateOfDate === "Tahunan") {
+        [results, metadata] = await sequelize.query(
+          "SELECT createdAt as `year`, sum(quantity * price_when_sold) AS `sum` FROM `transaction_details` AS `transaction_details` WHERE productId = " +
+            productId +
+            " GROUP BY YEAR(createdAt) ORDER BY YEAR(createdAt) ASC"
+        );
+      }
+      return this.handleSuccess({
+        message: "Revenue Found",
+        statusCode: 200,
+        data: results,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
 }
 
 module.exports = ReportService;
