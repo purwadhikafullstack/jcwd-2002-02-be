@@ -5,6 +5,7 @@ const {
   DaftarTransaksi,
   Stok,
   DetailTransaksi,
+  UserProduct,
 } = require("../../lib/sequelize");
 const Service = require("../service");
 const { sequelize } = require("../../lib/sequelize");
@@ -475,6 +476,186 @@ class ReportService extends Service {
         message: "Product Report Found",
         statusCode: 200,
         data: qtySoldData,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
+
+  static getItemsViewCount = async (produk_id, stateOfDate = "Bulanan") => {
+    try {
+      let viewed, prevViewed;
+
+      if (stateOfDate === "Mingguan") {
+        viewed = await UserProduct.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "week"),
+              [Op.lt]: NOW,
+            },
+            produk_id: {
+              [Op.eq]: produk_id,
+            },
+          },
+        });
+
+        prevViewed = await UserProduct.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "weeks"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "week"),
+            },
+            produk_id: {
+              [Op.eq]: produk_id,
+            },
+          },
+        });
+      } else if (stateOfDate === "Bulanan") {
+        viewed = await UserProduct.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "month"),
+              [Op.lt]: NOW,
+            },
+            produk_id: {
+              [Op.eq]: produk_id,
+            },
+          },
+        });
+
+        prevViewed = await UserProduct.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "months"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "month"),
+            },
+            produk_id: {
+              [Op.eq]: produk_id,
+            },
+          },
+        });
+      } else if (stateOfDate === "Tahunan") {
+        viewed = await UserProduct.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "year"),
+              [Op.lt]: NOW,
+            },
+            produk_id: {
+              [Op.eq]: produk_id,
+            },
+          },
+        });
+
+        prevViewed = await UserProduct.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "years"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "year"),
+            },
+            produk_id: {
+              [Op.eq]: produk_id,
+            },
+          },
+        });
+      }
+
+      const itemViewed = {
+        data: viewed || 0,
+        prevData: prevViewed || 0,
+      };
+      return this.handleSuccess({
+        message: "Items Viewed Count Found",
+        statusCode: 200,
+        data: itemViewed,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
+
+  static getItemsSoldCOunt = async (productId, stateOfDate = "Bulanan") => {
+    try {
+      let count, prevCount;
+
+      if (stateOfDate === "Mingguan") {
+        count = await DetailTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "week"),
+              [Op.lt]: NOW,
+            },
+            productId,
+          },
+        });
+
+        prevCount = await DetailTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "weeks"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "week"),
+            },
+            productId,
+          },
+        });
+      } else if (stateOfDate === "Bulanan") {
+        count = await DetailTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "month"),
+              [Op.lt]: NOW,
+            },
+            productId,
+          },
+        });
+
+        prevCount = await DetailTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "months"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "month"),
+            },
+            productId,
+          },
+        });
+      } else if (stateOfDate === "Tahunan") {
+        count = await DetailTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(1, "year"),
+              [Op.lt]: NOW,
+            },
+            productId,
+          },
+        });
+
+        prevCount = await DetailTransaksi.count({
+          where: {
+            createdAt: {
+              [Op.gt]: moment(TODAY_START).subtract(2, "years"),
+              [Op.lt]: moment(TODAY_START).subtract(1, "year"),
+            },
+            productId,
+          },
+        });
+      }
+
+      const itemCount = {
+        data: count || 0,
+        prevData: prevCount || 0,
+      };
+      return this.handleSuccess({
+        message: "Items Count Found",
+        statusCode: 200,
+        data: itemCount,
       });
     } catch (err) {
       console.log(err);

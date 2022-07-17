@@ -163,6 +163,48 @@ const ReportController = {
       });
     }
   },
+
+  getItemViewedCount: async (req, res) => {
+    try {
+      const { stateOfDate, productId } = req.body;
+      const serviceResult = await ReportService.getItemsViewCount(
+        productId,
+        stateOfDate
+      );
+
+      if (!serviceResult.success) throw serviceResult;
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+        result: serviceResult.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
+
+  getProductSoldCount: async (req, res) => {
+    try {
+      const { stateOfDate, productId } = req.body;
+      const serviceResult = await ReportService.getItemsSoldCOunt(
+        productId,
+        stateOfDate
+      );
+
+      if (!serviceResult.success) throw serviceResult;
+      return res.status(serviceResult.statusCode || 200).json({
+        message: serviceResult.message,
+        result: serviceResult.data,
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(err.statusCode || 500).json({
+        message: err.message,
+      });
+    }
+  },
 };
 
 module.exports = ReportController;
