@@ -7,6 +7,8 @@ const {
   MetodePembayaran,
   Cart,
   BuktiPembayaran,
+  User,
+  Alamat,
 } = require("../../lib/sequelize");
 const { nanoid } = require("nanoid");
 const { Op } = require("sequelize");
