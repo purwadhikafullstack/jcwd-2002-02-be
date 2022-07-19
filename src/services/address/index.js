@@ -98,6 +98,7 @@ class AddressService extends Service {
         where: {
           userId,
         },
+        order: [["is_main_address", "DESC"]],
       });
       if (!findAddress) {
         return this.handleError({
