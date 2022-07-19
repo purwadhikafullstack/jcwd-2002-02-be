@@ -183,6 +183,7 @@ class ProductService extends Service {
             [Op.ne]: 0,
           },
         },
+        limit: 5,
       });
 
       if (!getProductData) {

@@ -166,6 +166,59 @@ class AddressService extends Service {
       });
     }
   };
+
+  static changeMainAddress = async (userId, newAddressId) => {
+    try {
+      const findMainAddress = await Alamat.findOne({
+        where: {
+          is_main_address: true,
+          userId,
+        },
+      });
+
+      if (!findMainAddress) {
+        return this.handleError({
+          message: "There is no main address, please add one!",
+          statusCode: 500,
+        });
+      }
+
+      await Alamat.update(
+        {
+          is_main_address: false,
+        },
+        {
+          where: {
+            id: findMainAddress.id,
+          },
+        }
+      );
+
+      const updateMainAddress = await Alamat.update(
+        {
+          is_main_address: true,
+        },
+        {
+          where: {
+            id: newAddressId,
+            is_main_address: false,
+          },
+        }
+      );
+
+      return this.handleSuccess({
+        message: "Main address updated",
+        statusCode: 200,
+        data: updateMainAddress,
+      });
+    } catch (err) {
+      console.log(err);
+      return this.handleError({
+        message: "Server Error!",
+        statusCode: 500,
+      });
+    }
+  };
 }
 
 module.exports = AddressService;
