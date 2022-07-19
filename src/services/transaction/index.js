@@ -62,7 +62,7 @@ class TransactionService extends Service {
       delete query.userId;
 
       const statusClause = {};
-      let userClause = {};
+      const userClause = {};
 
       if (statusTerpilih) {
         statusClause.paymentStatusId = statusTerpilih;
@@ -95,6 +95,7 @@ class TransactionService extends Service {
         where: {
           ...query,
           ...statusClause,
+          ...userClause,
         },
         include: [
           { model: BuktiPembayaran },
