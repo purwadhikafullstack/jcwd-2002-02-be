@@ -23,6 +23,7 @@ class TransactionService extends Service {
         _sortDir = "",
         statusTerpilih,
         username,
+        userId = undefined,
       } = query;
 
       delete query._limit;
@@ -31,9 +32,10 @@ class TransactionService extends Service {
       delete query._sortDir;
       delete query.statusTerpilih;
       delete query.username;
+      delete query.userId;
 
       const statusClause = {};
-      let userClause = {};
+      const userClause = {};
 
       if (statusTerpilih) {
         statusClause.paymentStatusId = statusTerpilih;
@@ -58,11 +60,15 @@ class TransactionService extends Service {
 
         query.userId = findUser.id;
       }
+      if (userId) {
+        userClause.userId = userId;
+      }
 
       const findTransactions = await DaftarTransaksi.findAndCountAll({
         where: {
           ...query,
           ...statusClause,
+          ...userClause,
         },
         include: [
           { model: BuktiPembayaran },
