@@ -62,7 +62,7 @@ class TransactionService extends Service {
       delete query.userId;
 
       const statusClause = {};
-      const userClause = {};
+      let userClause = {};
 
       if (statusTerpilih) {
         statusClause.paymentStatusId = statusTerpilih;
