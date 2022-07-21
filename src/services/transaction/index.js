@@ -95,7 +95,6 @@ class TransactionService extends Service {
         where: {
           ...query,
           ...statusClause,
-          ...userClause,
         },
         include: [
           { model: BuktiPembayaran },
