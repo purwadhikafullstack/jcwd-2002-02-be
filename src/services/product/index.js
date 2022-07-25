@@ -174,6 +174,10 @@ class ProductService extends Service {
         where: {
           productCategoryId: categoryId,
         },
+        include: {
+          model: Stok,
+        },
+        limit: 5,
       });
 
       if (!getProductData) {
