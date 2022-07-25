@@ -260,7 +260,7 @@ class ProductService extends Service {
         ],
         order: [[Sequelize.col("productCount"), "DESC"]],
         group: ["productId"],
-        limit: 5,
+        limit: 6,
       });
 
       if (!getPopularProduct) {
